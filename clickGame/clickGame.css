@@ -1,0 +1,42 @@
+body {
+    background-color: gray;
+}
+
+.align {
+    width: 80px;
+    height: 80px;
+    margin: -15 auto;
+    justify-content: center;
+}
+
+.hide {
+    display: none;
+}
+
+.hexagon {
+    position: absolute;
+    width: 90px;
+    height: 100px;
+    background-color: #134d58;
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    opacity: 0.6;
+  }
+  
+.pulse {
+animation: pulse 1s ease-out;
+}
+  
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+    60% {
+        transform: scale(1.4);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+}
