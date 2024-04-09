@@ -3,33 +3,21 @@ if ($("#start").click(function(){
     $("#item").removeClass("hide");
     $("#navTimer").removeClass("hide");
     startGame();
+    bool = true;
 }));
 
-function clickCounter() {
-    let innerCounter = document.getElementById("counter");
-    let counter = 0;
-    if ($(".background").click(function(){
-        counter++;
-        console.log(counter);
-        innerCounter.innerHTML = "Counter Click: " + counter;
-        counterCount = counter;
-        click.play();
-        $( ".hexagon").remove();
-        placeElements();
-    }));
-};
 
-var counterCount;
+
+var lastGameCounter = 0;
+var hexagon_s = [];
 var game = new Audio("gameSound.mp3");
 var countDownGame = new Audio("countDownGame.mp3");
 var endGame = new Audio("endGame.wav");
-var click = new Audio("click.mp3");
-
+var moreThanLast = new Audio("moreThanLast.wav");
 var audioValue;
 
 volume.addEventListener("input", (e) => {
     audioValue = e.currentTarget.value / 100;
-        
         $("input").on('mousedown mouseup', function mouseState(e) {
             if (e.type == "mousedown") {
                 game.play(); 
@@ -41,36 +29,55 @@ volume.addEventListener("input", (e) => {
     countDownGame.volume = audioValue;
     game.volume = audioValue;
     endGame.volume = audioValue;
-    click.volume = audioValue;
+    moreThanLast.volume = audioValue;
+});
 
-  });
+function clickCounter() {
+    let counter = 0;
+    var bool = false;
+    let innerCounter = document.getElementById("counter");
+    if ($(".background").click(function(){
+        counter++;
+        hexagon_s = [counter / 120, counter];
+        innerCounter.innerHTML = "Counter Click: " + counter;
+
+        if ((hexagon_s[1] > lastGameCounter) && (bool == false)) {
+            bool = true;
+            moreThanLast.play();
+        };
+
+        $(".hexagon").remove();
+        placeElements();
+    }));
+};
 
 function timerGame() {
-    let time = 120;
+    let time = 10;
     let x = setInterval(function(){
         time += -1;
         game.play();
         document.getElementById("timerGame").innerHTML = "Remaining Time: " + time;
         if (time == 0) {
-           
+            lastGameCounter = hexagon_s[1];
             let endGame = new Audio("endGame.wav");
             endGame.play();
             clearInterval(x);
             let innerCounter = document.getElementById("counter");
-            let counter = innerCounter.innerHTML.toLowerCase();
-            document.getElementById("lastGame").innerHTML = "Last game " + counter + "<br>" + "Hexagon/s: " + (counterCount / 120).toFixed(2);
+            let lowerCasecounter = innerCounter.innerHTML.toLowerCase();
+            document.getElementById("lastGame").innerHTML = "Last game " + lowerCasecounter + "<br>" + "Hexagon/s: " + (hexagon_s[0]).toFixed(2);
             $( ".hexagon").remove();
             $("#item").addClass("hide");
             $("#navTimer").addClass("hide");
             $("#nav").removeClass("hide");
             game.pause();
             game.currentTime = 0;
+            
         };
     }, 1000); 
 };
 
 function startGame() {
-    let countDown = 3;
+    let countDown = 4;
     countDownGame.play();
     let x = setInterval(function() {
         countDown += - 1;
@@ -81,7 +88,6 @@ function startGame() {
             clearInterval(x);
             $("#countDown").addClass("hide");
             clickCounter();
-            
             placeElements();
             timerGame();
             
@@ -106,7 +112,6 @@ function placeElements() {
     let randomTop = getRandomNumber(0, winHeight - 100);
     let randomLeft = getRandomNumber(0, winWidth - 100);
 
-    console.log(winHeight,winWidth,randomTop,randomLeft);
 
     let hexagon = document.createElement("div");
     hexagon.classList.add("hexagon");
