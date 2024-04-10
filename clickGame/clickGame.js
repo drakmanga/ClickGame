@@ -56,8 +56,10 @@ function clickCounter() {
 
     $(document).on("click","body",function() {
         if (counter >= 1) {
+            var errorClick = new Audio("errorClick.wav");
             counter--;
-            innerCounter.innerHTML = "Counter Click: " + counter + " -1";
+            errorClick.play();
+            innerCounter.innerHTML = "Counter Click: " + counter;
         };
     });
 };
