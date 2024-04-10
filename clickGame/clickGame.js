@@ -55,7 +55,7 @@ function clickCounter() {
 };
 
 function timerGame() {
-    let time = 10;
+    let time = 120;
     let x = setInterval(function(){
         time += -1;
         game.play();
