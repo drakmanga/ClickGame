@@ -3,6 +3,7 @@ if ($("#start").click(function(){
     $("#item").removeClass("hide");
     $("#navTimer").removeClass("hide");
     $("#countDown").removeClass("hide");
+    $("#start").addClass("hide")
     startGame();
     bool = true;
 }));
@@ -14,7 +15,7 @@ var game = new Audio("gameSound.mp3");
 var countDownGame = new Audio("countDownGame.mp3");
 var endGame = new Audio("endGame.wav");
 var moreThanLast = new Audio("moreThanLast.wav");
-var audioValue;
+var audioValue = 1;
 
 
 volume.addEventListener("input", (e) => {
@@ -44,7 +45,7 @@ function clickCounter() {
         hexagon_s = [counter / 120, counter];
         innerCounter.innerHTML = "Counter Click: " + counter;
 
-        if ((hexagon_s[1] > lastGameCounter) && (bool == false)) {
+        if ((hexagon_s[1] > lastGameCounter) && (bool == false) && (lastGameCounter !=0)) {
             bool = true;
             moreThanLast.play();
         };
@@ -52,6 +53,13 @@ function clickCounter() {
         $(".hexagon").remove();
         placeElements();
     }));
+
+    $(document).on("click","body",function() {
+        if (counter >= 1) {
+            counter--;
+            innerCounter.innerHTML = "Counter Click: " + counter + " -1";
+        };
+    });
 };
 
 function timerGame() {
@@ -73,6 +81,7 @@ function timerGame() {
             $("#item").addClass("hide");
             $("#navTimer").addClass("hide");
             $("#nav").removeClass("hide");
+            $("#start").removeClass("hide")
             game.pause();
             game.currentTime = 0;
 
