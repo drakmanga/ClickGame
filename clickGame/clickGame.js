@@ -1,31 +1,54 @@
 if ($("#start").click(function(){
-    $("#nav").addClass("hide")
-    $("#item").removeClass("hide");
+    $("#nav").addClass("hide");
     $("#navTimer").removeClass("hide");
     $("#countDown").removeClass("hide");
-    $("#start").addClass("hide")
+    $("#divstart").addClass("hide");
+    $("#divend").addClass("hide");
+    counter = 0;
     startGame();
+    soundOff(moreThanLast);
+    soundOff(endGame);
     bool = true;
 }));
 
+if ($("#restart").click(function(){
+    $("#nav").addClass("hide");
+    $("#navTimer").removeClass("hide");
+    $("#countDown").removeClass("hide");
+    $("#divstart").addClass("hide");
+    $("#divend").addClass("hide");
+    counter = 0
+    reStartGame();
+    soundOff(moreThanLast);
+    soundOff(endGame);
+    bool = true;
+}));
+
+var counter = 0;
 var lastGameCounter = 0;
 var hexagon_s = [];
 var game = new Audio("gameSound.mp3");
+var innerCounter = document.getElementById("counter");
 
 var countDownGame = new Audio("countDownGame.mp3");
 var endGame = new Audio("endGame.wav");
 var moreThanLast = new Audio("moreThanLast.wav");
 var audioValue = 1;
+var isGameOn = false;
 
 
 volume.addEventListener("input", (e) => {
     audioValue = e.currentTarget.value / 100;
         $("input").on('mousedown mouseup', function mouseState(e) {
             if (e.type == "mousedown") {
-                game.play(); 
+                if (!isGameOn) {
+                    game.play(); 
+                }
             }else {
-                game.pause();
-                game.currentTime = 0;
+                if (!isGameOn) {
+                    game.pause();
+                    game.currentTime = 0;
+                }
             }
         });
     countDownGame.volume = audioValue;
@@ -33,35 +56,46 @@ volume.addEventListener("input", (e) => {
     moreThanLast.volume = audioValue;
 });
 
+
 function clickCounter() {
-    let counter = 0;
+    
+    let missCounter = 0;
     var bool = false;
-    let innerCounter = document.getElementById("counter");
     if ($(".background").click(function(){
         var click = new Audio("click.mp3");
         click.volume = audioValue;
-        counter++;
+        counter += +1;
         click.play();
-        hexagon_s = [counter / 120, counter];
-        innerCounter.innerHTML = "Counter Click: " + counter;
-
-        if ((hexagon_s[1] > lastGameCounter) && (bool == false) && (lastGameCounter !=0)) {
+        hexagon_s = [counter / 120, counter, missCounter];
+        innerCounter.innerHTML = "Counter Hexagons: " + counter;
+        if (counter > lastGameCounter && bool == false && lastGameCounter !=0) {
             bool = true;
+            $("#niceGame").addClass("hide");
+            $("#newrecord").removeClass("hide");
+            document.getElementById("newrecord").innerHTML = "New Record!" + "<br>" + "🏆CONGRATULATIONS🏆";
             moreThanLast.play();
         };
-
         $(".hexagon").remove();
         placeElements();
     }));
 
     $(document).on("click","body",function() {
-        if (counter >= 1) {
-            var errorClick = new Audio("errorClick.wav");
-            counter--;
-            errorClick.play();
-            innerCounter.innerHTML = "Counter Click: " + counter;
-        };
-    });
+        if (isGameOn == true) {
+            if (counter >= 1) {
+                var errorClick = new Audio("errorClick.wav");
+                counter--;
+                missCounter++;
+                hexagon_s = [counter / 120, counter, missCounter];
+                errorClick.play();
+                innerCounter.innerHTML = "Counter Hexagons: " + counter;
+            }
+        }
+    }); 
+};
+
+function soundOff(sound) {
+    sound.pause();
+    sound.currentTime = 0;
 };
 
 function timerGame() {
@@ -71,41 +105,68 @@ function timerGame() {
         game.play();
         document.getElementById("timerGame").innerHTML = "Remaining Time: " + time;
         if (time == 0) {
-            lastGameCounter = hexagon_s[1];
-            let endGame = new Audio("endGame.wav");
+            isGameOn = false;
+            if (lastGameCounter < hexagon_s[1]) {
+                lastGameCounter = hexagon_s[1];
+            }
+            var endGame = new Audio("endGame.wav");
             endGame.volume = audioValue;
             endGame.play();
             clearInterval(x);
-            let innerCounter = document.getElementById("counter");
-            let lowerCasecounter = innerCounter.innerHTML.toLowerCase();
-            document.getElementById("lastGame").innerHTML = "Last game " + lowerCasecounter + "<br>" + "Hexagon/s: " + (hexagon_s[0]).toFixed(2);
+            document.getElementById("hexagons").innerHTML = "Hexagons:  " + hexagon_s[1];
+            document.getElementById("hexagonsMiss").innerHTML = "Hexagons Miss: " + hexagon_s[2];
+            document.getElementById("hexagons_s").innerHTML = "Hexagon/s: " + (hexagon_s[0]).toFixed(2);
             $( ".hexagon").remove();
-            $("#item").addClass("hide");
             $("#navTimer").addClass("hide");
             $("#nav").removeClass("hide");
-            $("#start").removeClass("hide")
-            game.pause();
-            game.currentTime = 0;
-
-            
+            $("#divend").removeClass("hide")
+            soundOff(game);
+            innerCounter.innerHTML = "Counter Hexagons: " + 0;
+            document.getElementById("timerGame").innerHTML = "";
         };
     }, 1000); 
 };
 
 function startGame() {
-    let countDown = 4;
+    counter = 0;
+    var countDown = 4;
     countDownGame.play();
     let x = setInterval(function() {
         countDown += -1;
         document.getElementById("countDown").innerHTML = "La partita inizierà fra: " + "<br><br><br>" + countDown;
         if (countDown == 0) {
-            countDownGame.pause();
-            countDownGame.currentTime = 0;
+            document.getElementById("countDown").innerHTML = "";
+            soundOff(countDownGame);
             clearInterval(x);
             $("#countDown").addClass("hide");
+            $("#niceGame").removeClass("hide");
+            $("#newrecord").addClass("hide");
+            isGameOn = true; 
+            timerGame();  
             clickCounter();
             placeElements();
-            timerGame();            
+                
+        };
+    }, 1000);
+};
+
+function reStartGame() {
+    counter = 0;
+    var countDown = 4;
+    countDownGame.play();
+    let x = setInterval(function() {
+        countDown += -1;
+        document.getElementById("countDown").innerHTML = "La partita inizierà fra: " + "<br><br><br>" + countDown;
+        if (countDown == 0) {
+            document.getElementById("countDown").innerHTML = "";
+            soundOff(countDownGame);
+            clearInterval(x);
+            $("#countDown").addClass("hide");
+            $("#niceGame").removeClass("hide");
+            $("#newrecord").addClass("hide");
+            isGameOn = true; 
+            placeElements();
+            timerGame();      
         };
     }, 1000);
 };

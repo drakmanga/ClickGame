@@ -9,7 +9,7 @@
     
     <head>
         <meta charset="utf-8">
-        <title>Click Game</title>
+        <title>Hxagons Game</title>
         <link rel="stylesheet" href="clickGame.css">
     </head>
 
@@ -23,29 +23,50 @@
         </nav>
         
         <nav id="navTimer" class="navbar navbar-light bg-light hide">
-            <p id="counter">Counter Click: 0 </p>
+            <p id="counter">Counter Hexagons: 0 </p>
             <p id="timerGame"></p>
         </nav>
         <br>
 
         <div class="d-flex align-items-center justify-content-center">
-            <div id="start" class="card text-center" style="width: 35rem;">
+            <div id="divstart" class="card text-center" style="width: 35rem;">
                 <div class="card-body">
 
-                    <h1>Welcome To Click Game</h1>
-                    <h3>How this game work</h3>
+                    <h1>Welcome To Hxagon</h1>
+                    <h3>Rules</h3>
                     <ul style="list-style-position: inside">
-                        <li>The game during 120 second</li>
-                        <li>Click hexagons for obtain 1 point</li>
-                        <li>Click outside of hexagons cost 1 point</li>
+                        <li>The game last 120 second</li>
+                        <li>Clicking on hexagons will add 1 point</li>
+                        <li>Click outside of hexagons will remove 1 point</li>
                     </ul>
-                    <h3>When u are ready start the game!</h3>
+                    <h3>When you are ready start the game!</h3>
                     <button class="btn btn-light btn-outline-dark" type="button" id="start">
                         START THE GAME
                     </button>
                 </div>
             </div>
+            <div id="divend" class="card text-center hide" style="width: 35rem;">
+                <div class="card-body">
+
+                    <h1 id="niceGame">Nice game!</h1>
+                    <h2 id="newrecord" class="hide"></h2>
+                    <h3>Statistics:</h3>
+                    <ul style="list-style-position: inside">
+                        <li id="hexagons"></li>
+                        <li id="hexagonsMiss"></li>
+                        <li id="hexagons_s"></li>
+                    </ul>
+                    <h3>When you are ready restart the game!</h3>
+                    <button class="btn btn-light btn-outline-dark" type="button" id="restart">
+                        RESTART THE GAME
+                    </button>
+                </div>
+            </div>
         </div>
+
+       
+            
+        
 
         <h1 id="countDown" class="text-center"></h1>
         <div class="background"></div>
